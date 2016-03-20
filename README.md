@@ -1,2 +1,2 @@
 # mandlebrot-javascript
-Sequential and parallel versions of the Mandelbrot equation in JavaScript
+Sequential and parallel versions of the Mandelbrot set in JavaScript
