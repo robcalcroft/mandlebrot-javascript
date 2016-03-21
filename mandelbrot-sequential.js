@@ -1,4 +1,4 @@
-class SequentialMandlebrot {
+class SequentialMandelbrot {
     constructor({ size, cutoff }) {
         this.set = this.createMultidimensionalArray(size);
 
@@ -50,7 +50,7 @@ class SequentialMandlebrot {
     }
 }
 
-const mandlebrot = new SequentialMandlebrot({
+const mandelbrot = new SequentialMandelbrot({
     size: 4096,
     cutoff: 100
 });

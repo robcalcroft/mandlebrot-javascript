@@ -1,23 +1,25 @@
 {
-  "name": "mandlebrot-javascript",
+  "name": "paralleladventures",
   "version": "1.0.0",
-  "description": "Sequential and parallel versions of the Mandelbrot set in JavaScript",
+  "description": "Sequential and parallel versions of calcuations in JavaScript",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sequential": "babel-node mandlebrot-sequential.js",
-    "parallel": "babel-node mandlebrot-parallel.js"
+    "mandelbrot-sequential": "babel-node mandelbrot-sequential.js",
+    "mandelbrot-parallel": "babel-node mandelbrot-parallel.js",
+    "pi-sequential": "babel-node pi-sequential.js",
+    "pi-parallel": "babel-node pi-parallel.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robcalcroft/mandlebrot-javascript.git"
+    "url": "git+https://github.com/robcalcroft/paralleladventures.git"
   },
   "author": "Rob Calcroft",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/robcalcroft/mandlebrot-javascript/issues"
+    "url": "https://github.com/robcalcroft/paralleladventures/issues"
   },
-  "homepage": "https://github.com/robcalcroft/mandlebrot-javascript#readme",
+  "homepage": "https://github.com/robcalcroft/paralleladventures#readme",
   "dependencies": {
     "node-babel": "^0.1.2",
     "paralleljs": "github:adambom/parallel.js"

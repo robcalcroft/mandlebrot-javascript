@@ -1,6 +1,6 @@
 import Parallel from 'paralleljs';
 
-class ParallelMandlebrot {
+class ParallelMandelbrot {
     constructor({ size, cutoff, threads }) {
         this.threads = threads;
 
@@ -10,13 +10,14 @@ class ParallelMandlebrot {
         // Create the parallel instance with the empty set and the env vars so
         // they can be accessed inside the spawned process
         const p = new Parallel(set, {
-            env: { size, cutoff, threads }
+            env: { size, cutoff }
         });
 
         // Loop for each thread
         for(let threadCount = 0; threadCount < threads; threadCount++) {
-            // Wrap the data with the threadCount then spawn a process
-            p.then(set => ({ set, threadCount })).spawn(this.calculateSet);
+            p.then(set => ({ set, threadCount }))
+            .spawn(this.calculateSet)
+            .then(this.done);
         }
     }
 
@@ -29,20 +30,15 @@ class ParallelMandlebrot {
     }
 
     done({set, threadCount}) {
-        console.log(threadCount);
         if(threadCount === threads - 1) {
 
         }
     }
 
     calculateSet({set, threadCount}) {
-        //const begin = threadCount === 0 ? 0 : global.env.size / 2;
-        //const end = threadCount === 0 ? global.env.size / 2 : global.env.size;
 
-        const blockSize = global.env.size / global.env.threads;
-
-        const begin = threadCount * blockSize;
-        const end = begin + blockSize;
+        const begin = threadCount === 0 ? 0 : global.env.size / 2;
+        const end = threadCount === 0 ? global.env.size / 2 : global.env.size;
 
         for(let i = begin ; i < end ; i++) {
             for(let j = 0 ; j < global.env.size ; j++) {
@@ -65,9 +61,8 @@ class ParallelMandlebrot {
 
                     k++;
                 }
-                if(i === 0 && j === 0) { console.log(j, i, set[2048]);  }
-                //if(threadCount===1) { console.log(j, i, set[i]); }
-                set[i][j] = k;
+
+                set[i] [j] = k;
             }
         }
 
@@ -75,7 +70,7 @@ class ParallelMandlebrot {
     }
 }
 
-const mandlebrot = new ParallelMandlebrot({
+const mandelbrot = new ParallelMandelbrot({
     size: 4096,
     cutoff: 100,
     threads: 2
