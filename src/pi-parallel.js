@@ -5,7 +5,6 @@ class ParallelPi {
         this.numberOfSteps = 10000000;
         this.threads = threads;
         this.steps = this.createEmptySteps(this.threads);
-        this.namingCounter = 0;
         this.threadCounter = 0;
         this.threadData = [];
 

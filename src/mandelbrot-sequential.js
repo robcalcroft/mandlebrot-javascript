@@ -8,7 +8,11 @@ class SequentialMandelbrot {
     createMultidimensionalArray(size) {
         const array = [];
         for (let i = 0; i < size; i++) {
-            array.push([]);
+            let array2 = [];
+            for (let j = 0; j < size; j++) {
+                array2.push([]);
+            }
+            array.push(array2);
         }
         return array;
     }

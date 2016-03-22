@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "mandelbrot-sequential": "babel-node mandelbrot-sequential.js",
-    "mandelbrot-parallel": "babel-node mandelbrot-parallel.js",
-    "pi-sequential": "babel-node pi-sequential.js",
-    "pi-parallel": "babel-node pi-parallel.js"
+    "mandelbrot-sequential": "babel-node src/mandelbrot-sequential.js",
+    "mandelbrot-parallel": "babel-node src/mandelbrot-parallel.js",
+    "pi-sequential": "babel-node src/pi-sequential.js",
+    "pi-parallel": "babel-node src/pi-parallel.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/robcalcroft/paralleladventures#readme",
   "dependencies": {
+    "jetty": "^0.2.1",
     "node-babel": "^0.1.2",
     "paralleljs": "github:adambom/parallel.js"
   }
