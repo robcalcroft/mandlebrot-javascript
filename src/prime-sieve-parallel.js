@@ -9,7 +9,7 @@ class PrimeSieveParallel {
         this.threads = threads;
 
         const blockSize = (max - min) / threads;
-        const p = new Parallel(this.createEmptyArray());
+        const p = new Parallel(this.createEmptyArray(threads));
 
         for(let threadCount = 0; threadCount < threads; threadCount++) {
             let threadMin = threadCount * blockSize;
@@ -89,7 +89,7 @@ class PrimeSieveParallel {
         }
 
         /* jshint ignore:end */
-        console.log('stared thread')
+        console.log('stared thread', Date.now());
         let primes = [];
 
         const startTime = Date.now();
