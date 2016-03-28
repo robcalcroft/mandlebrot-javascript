@@ -9,55 +9,35 @@ class PrimeSieveParallel {
         this.threads = threads;
 
         const blockSize = (max - min) / threads;
-        const p = new Parallel(this.createEmptyArray(threads));
 
+        const p = new Parallel(this.createData(threads, blockSize), {
+            maxWorkers: threads
+        });
+
+        p.map(this.findPrimes).reduce(this.collateData).then(result => {
+            console.log(`${result.primes.length} primes calcuated in ${result.duration} milliseconds`);
+        });
+    }
+
+    createData(threads, blockSize) {
+        let array = [];
         for(let threadCount = 0; threadCount < threads; threadCount++) {
             let threadMin = threadCount * blockSize;
             let threadMax = threadMin + blockSize;
 
-            p.then(data => ({
-                data,
-                min: threadMin + min, // offsets the min
-                max: threadMax + min // offsets the max
-            }))
-            .spawn(this.findPrimes)
-            .then(this.saveResult.bind(this))
-            .then(this.checkIfFinished.bind(this));
-        }
-
-        //console.log(`${result.primes.length} primes were found between ${min} and ${max} in ${result.duration} milliseconds`);
-    }
-
-    createEmptyArray(threads) {
-        let array = [];
-        for(let i = 0; i < threads; i++) {
-            array.push([]);
+            array.push([threadMin, threadMax]);
         }
         return array;
     }
 
-    saveResult(data) {
-        this.primeSet.push(data);
+    collateData(items) {
+        return {
+            primes: items[0].primes.concat(items[1].primes),
+            duration: items[0].duration + items[1].duration
+        };
     }
 
-    // If all the threads have finished then we can finish
-    checkIfFinished() {
-        if(this.threadCounter === this.threads - 1) {
-
-            // Sum all the durations via a map reduce
-            const duration = this.primeSet.map(element => element.duration).reduce((previous, current) => previous + current);
-
-            // Concatinate all the primes using a map reduce
-            const primes = this.primeSet.map(element => element.primes).reduce((previous, current) => previous.concat(current));
-
-            console.log(`${primes.length} primes were found between ${this.min} and ${this.max} in ${duration} milliseconds`);
-        }
-
-        // If we're not finished, increment the thread counter
-        this.threadCounter++;
-    }
-
-    findPrimes({min, max}) {
+    findPrimes(data) {
         /* jshint ignore:start */
 
         // Sourced from: http://www.javascripter.net/faq/numberisprime.htm
@@ -89,8 +69,10 @@ class PrimeSieveParallel {
         }
 
         /* jshint ignore:end */
-        console.log('stared thread', Date.now());
+        //console.log('stared thread', Date.now());
         let primes = [];
+        let min = data[0];
+        let max = data[1];
 
         const startTime = Date.now();
 

@@ -8,7 +8,9 @@
     "mandelbrot-sequential": "babel-node src/mandelbrot-sequential.js",
     "mandelbrot-parallel": "babel-node src/mandelbrot-parallel.js",
     "pi-sequential": "babel-node src/pi-sequential.js",
-    "pi-parallel": "babel-node src/pi-parallel.js"
+    "pi-parallel": "babel-node src/pi-parallel.js",
+    "prime-parallel": "babel-node src/prime-sieve-parallel.js",
+    "prime-sequential": "babel-node src/prime-sieve-sequential"
   },
   "repository": {
     "type": "git",
