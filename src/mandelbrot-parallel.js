@@ -1,38 +1,38 @@
 import Parallel from 'paralleljs';
 
 class ParallelMandelbrot {
-    constructor({ size, cutoff, threads }) {
-        this.threads = threads;
-        this.threadCounter = 0;
-        this.threadData = [];
-        this.size = size;
-
-        // Create an empty set
-        const set = this.createMultidimensionalArray(size);
+    constructor(size, cutoff, threads) {
 
         // Create the parallel instance with the empty set and the env vars so
         // they can be accessed inside the spawned process
-        this.p = new Parallel(set, {
-            env: { size, cutoff }
+        let startTime = Date.now()
+        let data = this.createData(threads, size);
+        const p = new Parallel(data, {
+            env: { size, cutoff },
+            maxWorkers: threads
         });
+        const endTime = Date.now()
 
-        this.startTime = Date.now();
+        console.log(`Set generated in ${endTime - startTime} milliseconds`);
 
-        // Loop `this.thread` number of times
-        for (let threadCount = 0; threadCount < this.threads; ++threadCount) {
+        startTime = Date.now();
 
-            // Wrap the data with begin and end values
-            this.p.then(set => ({
-                begin: threadCount === 0 ? 0 : this.size / 2,
-                end: threadCount === 0 ? this.size / 2 : this.size,
-                set: threadCount === 0 ? set.slice(0, a.length/2) : set.slice(a.length/2)
-            }))
+        p.map(this.calculateSet).reduce(this.collateData).then(result => {
+            console.log(`Calculated in ${result.duration} milliseconds total time taken ${Date.now() - startTime}`);
+        });
+    }
 
-            // Spawn the worker
-            .spawn(this.calculateSet)
-            .then(this.saveResult.bind(this))
-            .then(this.checkIfFinished.bind(this));
+    createData(threads, size) {
+        let array = [];
+        let blockSize = size / threads;
+        for(let threadCount = 0; threadCount < threads; threadCount++) {
+            let begin = threadCount * blockSize;
+            let end = begin + blockSize;
+            let set = this.createMultidimensionalArray(size);
+
+            array.push([begin, end, set]);
         }
+        return array;
     }
 
     createMultidimensionalArray(size) {
@@ -47,7 +47,20 @@ class ParallelMandelbrot {
         return array;
     }
 
-    calculateSet({begin, end, set}) {
+    collateData(items) {
+        return {
+            set: items[0].set.concat(items[1].set),
+            duration: items[0].duration + items[1].duration
+        };
+    }
+
+    calculateSet(element) {
+        const begin = element[0];
+        const end = element[1];
+        let set = element[2];
+        console.log('starting thread', begin);
+        const startTime = Date.now();
+
         for(let i = begin ; i < end ; i++) {
             for(let j = 0 ; j < global.env.size ; j++) {
 
@@ -69,43 +82,18 @@ class ParallelMandelbrot {
 
                     k++;
                 }
-
-                set[i] [j] = k;
+                if(!set[i]) throw new Error(set.length);
+                set[i][j] = k;
             }
         }
 
-        return set;
-    }
+        const endTime = Date.now();
 
-    // Save the data and the end time, we calculate the longest end time at
-    // the end which becomes the final end time.
-    saveResult(data) {
-        this.threadData.push({
-            data,
-            finish: Date.now()
-        });
-    }
-
-    // If all the threads have finished then we can finish
-    checkIfFinished() {
-        console.log('thread finised');
-        if(this.threadCounter === this.threads - 1) {
-
-            // Get the end time by extracting the finish time out of the thread
-            // objects and then finding the largest one.
-            const endTime = Math.max(...this.threadData.map(thread => thread.finish));
-            console.log(...this.threadData.map(thread => thread.data));
-
-            console.log(`Finished in ${endTime - this.startTime}`);
-        }
-
-        // If we're not finished, increment the thread counter
-        this.threadCounter++;
+        return {
+            set,
+            duration: endTime - startTime
+        };
     }
 }
 
-const mandelbrot = new ParallelMandelbrot({
-    size: 512,
-    cutoff: 100,
-    threads: 2
-});
+const mandelbrot = new ParallelMandelbrot(process.argv[2], 100, process.argv[3]);

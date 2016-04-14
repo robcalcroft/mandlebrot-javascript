@@ -1,8 +1,8 @@
 class SequentialMandelbrot {
-    constructor({ size, cutoff }) {
+    constructor(size, cutoff) {
         this.set = this.createMultidimensionalArray(size);
 
-        this.calculateSet({size, cutoff});
+        this.calculateSet(size, cutoff);
     }
 
     createMultidimensionalArray(size) {
@@ -17,7 +17,8 @@ class SequentialMandelbrot {
         return array;
     }
 
-    calculateSet({size, cutoff}) {
+    calculateSet(size, cutoff) {
+
         const startTime = Date.now();
 
         for(let i = 0 ; i < size ; i++) {
@@ -54,7 +55,4 @@ class SequentialMandelbrot {
     }
 }
 
-const mandelbrot = new SequentialMandelbrot({
-    size: 4096,
-    cutoff: 100
-});
+const mandelbrot = new SequentialMandelbrot(4096, 100);
